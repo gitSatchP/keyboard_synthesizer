@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <meta charset="utf‐8">
+      <title> HW1 -- Creative Synth</title>
+    </head>
+    <style>
+        #filters{
+            text-indent: 4px;
+            word-spacing: 14px;
+        }
+        #selectarp{
+            text-indent: 4px;
+            word-spacing: 35px;
+        }
+    </style>
+     
+    <body>
+        
+        <p id = "header" style = "color : green;">Press keys to play synth</p>
+        
+        <input type="range" min="0" max="3" value = "0" class="slider" id="pitch">
+            
+        <p id = "filters"> ∿ 🪚🦷  🔲 ∆ </p>
+
+        <p id = "wave type">choose 🌊 type </p>
+
+        <input type="range" min="0" max="1" value = "0" class="slider" id="arpeggiator">
+
+        <p id = "selectarp">normal arpeggiator(beta) </p>
+
+        <p id = "arpornot">choose 🎹 style </p>
+            
+    </body>
+    <script src = "script.js"> </script>
+    <script>
+        function value(){
+            return document.getElementById("sine").value = 0;
+        }
+        function value2(){
+            return document.getElementById("sine").value = 1;
+        }
+    </script>
+
+</html>
