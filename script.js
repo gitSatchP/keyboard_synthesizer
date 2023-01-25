@@ -1,10 +1,10 @@
 // Add an event listener that waits for the DOM content to load before running the function
 addEventListener("DOMContentLoaded", function(event) {
 
-	// Create a new AudioContext
+    // Create a new AudioContext
     const audioCtx = new AudioContext();
 
-	// Map keyboard keys to their corresponding frequencies
+    // Map keyboard keys to their corresponding frequencies
     const keyboardFrequencyMap = {
         '90': 261.625565300598634,  //Z - C
         '83': 277.182630976872096, //S - C#
@@ -32,25 +32,25 @@ addEventListener("DOMContentLoaded", function(event) {
         '85': 987.766602512248223,  //U - B
     };
 
-	// Add an event listener for when a key is pressed down
+    // Add an event listener for when a key is pressed down
     document.addEventListener('keydown', keyDown, false);
 
-	// Add an event listener for when a key is released 
-    //document.addEventListener('keyup', keyUp, false);
+// Add an event listener for when a key is released 
+//document.addEventListener('keyup', keyUp, false);
 
 // Create an object to store active oscillators
 activeOscillators = {};
 
 // Function to run when a key is pressed down
 function keyDown(event) {
-	// Get the key that was pressed
+    // Get the key that was pressed
     const key = (event.detail || event.which).toString();
-	// Check the value of the arpeggiator element
+    // Check the value of the arpeggiator element
     const isArp = document.getElementById("arpeggiator").value;
-	// If the arpeggiator is off and the key is in the frequency map
+    // If the arpeggiator is off and the key is in the frequency map
     if(isArp==0){
         if (keyboardFrequencyMap[key] && !activeOscillators[key] ) { 
-			 // Play the note
+	    // Play the note
             playNote(key);
           }
     }
@@ -58,9 +58,9 @@ function keyDown(event) {
     // If the arpeggiator is on
     if(isArp ==1){
         if (keyboardFrequencyMap[key]) { //&& !activeOscillators[key]
-			// Play the note
+	    // Play the note
             playNote(key);
-			// Call the arpeggiator function with different offsets
+	    // Call the arpeggiator function with different offsets
             arpeggiator(key-2, 0.2);
             arpeggiator(key-16, 0.4);
             arpeggiator(key, 0.6);
@@ -79,31 +79,31 @@ const wavType = [
 ];
 
 function playNote(key) {
-	// Set values for the envelope of the note
+    // Set values for the envelope of the note
     const attackTime = 0.2;
     const decayTime = 0.3;
     const sustainLevel = 0.7;
     const releaseTime = 0.2;
 
-	// Create a gain node to control the volume of the note
+    // Create a gain node to control the volume of the note
     const primaryGainControl = audioCtx.createGain();
 
-	// Set the initial gain value to 0.08
+    // Set the initial gain value to 0.08
     primaryGainControl.gain.setValueAtTime(0.08, 0);
 
-	// Connect to the final output destination
+    // Connect to the final output destination
     primaryGainControl.connect(audioCtx.destination);
     
-	// Create an oscillator for the note
+    // Create an oscillator for the note
     const osc = audioCtx.createOscillator();
 	
-	// Set the frequency of the oscillator to the corresponding frequency of the key pressed
+    // Set the frequency of the oscillator to the corresponding frequency of the key pressed
     osc.frequency.setValueAtTime(keyboardFrequencyMap[key], audioCtx.currentTime);
 
-	// Set the wave type of the oscillator to the wave type chosen by the user on the frontend
+    // Set the wave type of the oscillator to the wave type chosen by the user on the frontend
     osc.type = wavType[document.getElementById("pitch").value]; 
     
-	// Create a gain node and set the envelope of the note
+    // Create a gain node and set the envelope of the note
     const oscGain = audioCtx.createGain();
     oscGain.gain.setValueAtTime(0, 0);
     oscGain.gain.linearRampToValueAtTime(1, audioCtx.currentTime + attackTime);
@@ -111,46 +111,46 @@ function playNote(key) {
     oscGain.gain.linearRampToValueAtTime(sustainLevel, audioCtx.currentTime +1-releaseTime);
     oscGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1);
     
-	// Connect the note to the gain
+    // Connect the note to the gain
     osc.connect(oscGain);
 
-	// Connect the gain to the volume 
+    // Connect the gain to the volume 
     oscGain.connect(primaryGainControl);
 
-	// Start the oscillator
+    // Start the oscillator
     osc.start();
     activeOscillators[key] = osc;
 
-	// Stop the oscillator after 1 second and remove it 
-	// from the list of active oscillators
+    // Stop the oscillator after 1 second and remove it 
+    // from the list of active oscillators
     osc.stop(audioCtx.currentTime +1);
     delete activeOscillators[key];
   }
 
 
   function arpeggiator(key, delayTime) {
-	// Set values for the envelope of the note
+    // Set values for the envelope of the note
     const attackTime = 0.2;
     const decayTime = 0.3;
     const sustainLevel = 1.2;
     const releaseTime = 0.2;
 
-	// Store the delay time for the arpeggiator
+    // Store the delay time for the arpeggiator
     this.delayTime = delayTime;
 
-	// Create a gain control node to control the volume of the arpeggiator
+    // Create a gain control node to control the volume of the arpeggiator
     const primaryGainControl = audioCtx.createGain();
     primaryGainControl.gain.setValueAtTime(0.08, 0);
 
-	// Connect to the final output destination
+    // Connect to the final output destination
     primaryGainControl.connect(audioCtx.destination);
     
-	// Create an oscillator for the arpeggiator
+    // Create an oscillator for the arpeggiator
     const osc = audioCtx.createOscillator();
     osc.frequency.setValueAtTime(keyboardFrequencyMap[key], audioCtx.currentTime);
     osc.type = wavType[document.getElementById("pitch").value]; 
     
-	// Create a gain node and set the envelope of the note
+    // Create a gain node and set the envelope of the note
     const oscGain = audioCtx.createGain();
     oscGain.gain.setValueAtTime(0, 0);
     oscGain.gain.linearRampToValueAtTime(1, audioCtx.currentTime + attackTime);
@@ -158,28 +158,28 @@ function playNote(key) {
     oscGain.gain.linearRampToValueAtTime(sustainLevel, audioCtx.currentTime +1-releaseTime);
     oscGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1.5);
     
-	// Create a delay node to delay the start of the oscillators
-	// which creates the arpeggiator effect
+    // Create a delay node to delay the start of the oscillators
+    // which creates the arpeggiator effect
     const delayNode = new DelayNode(audioCtx, {
         delayTime: this.delayTime,
         maxDelayTime: 4,
       });
 
-	// Connect the oscillator to the delay node
+    // Connect the oscillator to the delay node
     osc.connect(delayNode);
 	
-	// Connect the delay node to the gain node
+    // Connect the delay node to the gain node
     delayNode.connect(oscGain);
 
-	// Connect the gain node to the volume control
+    // Connect the gain node to the volume control
     oscGain.connect(primaryGainControl);
 
-	// Start the oscillator
+    // Start the oscillator
     osc.start();
     activeOscillators[key] = osc;
 
-	// Stop the oscillator after 1 second and remove it 
-	// from the list of active oscillators
+    // Stop the oscillator after 1 second and remove it 
+    // from the list of active oscillators
     osc.stop(audioCtx.currentTime +1+this.delayTime);
     //delete activeOscillators[key];
   }
